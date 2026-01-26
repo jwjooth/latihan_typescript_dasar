@@ -13,6 +13,8 @@ function displayVariables(): string {
   return `String ${sayHello}, Number : ${age}, Boolean : ${isMarried}`;
 }
 
+console.log(displayVariables()); // Output: String: Hello, Number: 42, Boolean: true
+
 // soal 3
 function sumArray(...numbers: number[][]): number {
   let total = 0;
@@ -46,6 +48,7 @@ const person3: Person = { name: "Bob" };
 
 console.log(describePerson(person1));
 // Output: Name: John, Email: john@example.com, Phone: Not provided
+console.log(describePerson(person2));
 console.log(describePerson(person3));
 // Output: Name: Bob, Email: Not provided, Phone: Not provided
 
@@ -166,15 +169,8 @@ interface Student {
 }
 
 function filterActiveStudents(value: Student[]): Student[] {
-  const arrayStudents: Array<Student> = [];
-  for (let i = 0; i < value.length; i++) {
-    if (value[i].gpa >= 3.0 && value[i].isActive == true) {
-      arrayStudents.push(value[i]);
-    }
-  }
-  return arrayStudents;
+  return value.filter((s) => s.gpa >= 3.0 && s.isActive);
 }
-
 const students: Student[] = [
   { id: 1, name: "Alice", major: "CS", gpa: 3.8, isActive: true },
   { id: 2, name: "Bob", major: "SE", gpa: 2.5, isActive: true },
@@ -277,7 +273,7 @@ console.log(getWorkingStudent(person));
 // Output: Software Engineer at position earning 50000000 from ITB (Computer Science)
 
 // soal 16
-function parseJSON(value: string): any {
+function parseJSON(value: string): JSON {
   const json = JSON.parse(value);
   return json;
 }
@@ -303,7 +299,7 @@ function processData(value: string): number;
 
 function processData(value: boolean): string;
 
-function processData(value: unknown): unknown {
+function processData(value: unknown): any {
   if (typeof value == "number") {
     return value * value;
   } else if (typeof value == "string") {
@@ -320,17 +316,22 @@ console.log(processData(false)); // Output: FALSE
 
 // soal 18
 interface NumberDictionary {
-  [key: number]: number;
+  [key: number]: string;
 }
 
-function createDictionary(value: NumberDictionary): Array<object> {
-  return [
-    { 1: "One" },
-    { 2: "Two" },
-    { 3: "Three" },
-    { 4: "Four" },
-    { 5: "Five" },
-  ];
+function createDictionary(value: number[]): NumberDictionary {
+  const a: NumberDictionary = {};
+  const mapWords: NumberDictionary = {
+    1: "One",
+    2: "Two",
+    3: "Three",
+    4: "Four",
+    5: "Five",
+  };
+  value.forEach((value) => {
+    a[value] = mapWords[value] ?? "Unknown";
+  });
+  return a;
 }
 
 const dict = createDictionary([1, 2, 3, 4, 5]);
@@ -339,9 +340,342 @@ console.log(dict[2]); // Output: Two
 console.log(dict[5]); // Output: Five
 
 // soal 19
-type ApiResponse = {
-  status: "success";
-  data: unknown;
+type ApiResponse =
+  | {
+      status: "success";
+      data: unknown;
+    }
+  | {
+      status: "error";
+      message: string;
+    };
+
+function handleResponse(value: ApiResponse): string {
+  if (value.status == "success") {
+    return `Success! Data retrieved.`;
+  } else {
+    return `Error! Message: Server Error`;
+  }
+}
+
+const successResponse: ApiResponse = {
+  status: "success",
+  data: { id: 1, name: "Product" },
+};
+const errorResponse: ApiResponse = { status: "error", message: "Server error" };
+
+console.log(handleResponse(successResponse)); // Output: Success! Data retrieved.
+console.log(handleResponse(errorResponse)); // Output: Error! Message: Server error
+
+// soal 20
+enum UserRole {
+  Admin = "Admin",
+  Manager = "Manager",
+  User = "User",
+}
+
+function checkPermission(value: UserRole): Array<string> {
+  if (value == "Admin") {
+    return ["create", "read", "update", "delete"];
+  } else if (value == "Manager") {
+    return ["read", "update"];
+  } else {
+    return ["read"];
+  }
+}
+
+console.log(checkPermission(UserRole.Admin));
+// Output: ["create", "read", "update", "delete"]
+console.log(checkPermission(UserRole.Manager));
+// Output: ["read", "update"]
+console.log(checkPermission(UserRole.User));
+// Output: ["read"]
+
+// soal 21 (BELUM SELESAI)
+// interface Calculator {
+//   add: (a: number, b: number) => number;
+//   subtract: (a: number, b: number) => number;
+//   multiply: (a: number, b: number) => number;
+//   divide: (a: number, b: number) => number | string;
+// }
+
+// function performCalculation(value: Calculator){
+
+// }
+
+// const calculator: Calculator = { ... };
+// const result1 = calculator.add(10, 5);
+// const result2 = calculator.divide(10, 0);
+
+// console.log(result1);                    // Output: 15
+// console.log(result2);                    // Output: Cannot divide by zero
+
+// soal 22
+type ClickEvent = {
+  type: "click";
+  x: number;
+  y: number;
 };
 
+type KeyEvent = {
+  type: "key";
+  key: string;
+  code: number;
+};
 
+type ScrollEvent = {
+  type: "scroll";
+  distance: number;
+};
+
+type Eventt = ClickEvent | KeyEvent | ScrollEvent;
+
+function handleEvent(value: Eventt): string {
+  if (value.type == "click") {
+    return `Click at position (${value.x}, ${value.y})`;
+  } else if (value.type == "key") {
+    return `Key pressed: ${value.key} (${value.code})`;
+  } else {
+    return `Scrolled ${value.distance} pixels`;
+  }
+}
+
+const clickEv: Eventt = { type: "click", x: 100, y: 200 };
+const keyEv: Eventt = { type: "key", key: "Enter", code: 13 };
+const scrollEv: Eventt = { type: "scroll", distance: 500 };
+
+console.log(handleEvent(clickEv)); // Output: Click at position (100, 200)
+console.log(handleEvent(keyEv)); // Output: Key pressed: Enter (13)
+console.log(handleEvent(scrollEv)); // Output: Scrolled 500 pixels
+
+// soal 23
+// interface Address {
+//   street: string;
+//   city: string;
+//   country: string;
+//   zipCode: string;
+// }
+
+// interface User {
+//   id: number;
+//   name: string;
+//   email: string;
+//   address: Address;
+//   contacts: Address[];
+// }
+
+// function findUsersByCity(value: string) : User[] {
+
+// }
+
+// const user2: User = {
+//   id: 1,
+//   name: "Alice",
+//   email: "alice@example.com",
+//   address: { street: "Jl. Sudirman", city: "Jakarta", country: "Indonesia", zipCode: "12000" },
+//   contacts: [
+//     { street: "Jl. Gatot Subroto", city: "Jakarta", country: "Indonesia", zipCode: "12000" },
+//     { street: "Jl. Ahmad Yani", city: "Bandung", country: "Indonesia", zipCode: "40000" }
+//   ]
+// };
+
+// const found = findUsersByCity("Jakarta");
+// console.log(found.length);  // Output: 1
+// console.log(found[0].name); // Output: Alice
+
+// soal 24
+// type UserResponse =
+//   | { status: "success"; data: { id: number; name: string } }
+//   | { status: "error"; error: string }
+//   | { status: "loading" };
+
+// function checkStatus<T>(value: UserResponse):
+//   | {
+//       status: "loading";
+//     }
+//   | {
+//       status: "success";
+//       data: T;
+//     }
+//   | {
+//       status: "error";
+//       error: string;
+//     } {
+//       if(value.status == "success"){
+//         return {status: "success" };
+//       } else if(value.status == "error"){
+//         return `{status}! Not Found`;
+//       } else {
+//         return `{status}`
+//       }
+//     }
+
+// const response1: UserResponse = {
+//   status: "success",
+//   data: {
+//     id: 1,
+//     name: "Alice",
+//   },
+// };
+// const response2: UserResponse = {
+//   status: "error",
+//   error: "Not found",
+// };
+// const response3: UserResponse = {
+//   status: "loading",
+// };
+
+// console.log(checkStatus(response1)); // Output: Success! User Alice loaded.
+// console.log(checkStatus(response2)); // Output: Error! Not found
+// console.log(checkStatus(response3)); // Output: Loading...
+
+// soal 25
+interface Mammal {
+  fur: boolean;
+  warmBlooded: true;
+  method(): void;
+}
+
+interface Bird {
+  feathers: boolean;
+  warmBlooded: true;
+  method(): void;
+}
+
+interface Platypus extends Mammal, Bird {}
+
+function describePlatypus(value: Platypus): string {
+  if (value.warmBlooded === true) {
+    if (value.feathers === true) {
+      return `A warm-blooded bird with feathers, not a mammal`;
+    } else if (value.fur === true) {
+      return `A warm-blooded mammal with fur, not a bird`;
+    } else {
+      return `unknown`;
+    }
+  } else {
+    if (value.feathers === true) {
+      return `A cool-blooded bird with feathers, not a mammal`;
+    } else if (value.fur === true) {
+      return `A cool-blooded mammal with fur, not a bird`;
+    } else {
+      return `unknown`;
+    }
+  }
+}
+
+const platypus: Platypus = {
+  fur: true,
+  feathers: false,
+  warmBlooded: true,
+  method: () => console.log("Monotreme behavior"),
+};
+
+console.log(describePlatypus(platypus));
+// Output: A warm-blooded mammal with fur, not a bird
+
+// soal 26
+function transform(data: string): string;
+
+function transform(data: number[]): number[];
+
+function transform(data: string[]): object;
+
+function transform(data: object): string[];
+
+function transform(data: unknown): any {
+  if (typeof data === "string") {
+    return `${data}`.toUpperCase().split("").reverse().join("");
+  }
+  if (
+    Array.isArray(data) &&
+    data.every((element) => typeof element == "number")
+  ) {
+    let total = 0;
+    for (const sum of data) {
+      total += sum;
+    }
+    return total;
+  }
+  if (
+    Array.isArray(data) &&
+    data.every((element) => typeof element == "string" && data !== undefined)
+  ) {
+    const emptyObject: { [key: string]: number } = {};
+    for (let i = 0; i < data.length; i++) {
+      emptyObject[i] = data[i].length;
+    }
+    return emptyObject;
+  }
+  if (typeof data === "object" && data !== null) {
+    const keys: string[] = Object.keys(data);
+    return keys;
+  }
+}
+
+console.log(transform("hello")); // Output: OLLEH
+console.log(transform([1, 2, 3, 4, 5])); // Output: 15
+console.log(transform(["a", "bb", "ccc"])); // Output: { '0': 1, '1': 2, '2': 3 }
+console.log(transform({ a: 1, b: 2 })); // Output: ["a", "b"]
+
+// soal 27
+type QueryResult = [success: boolean, data?: object[], errorMessage?: string];
+
+function executeQuery(params: string): QueryResult {
+  let arrayQuery: object[] = [];
+  if (params.toUpperCase() == "SELECT * FROM users") {
+    for (let i = 1; i <= 5; i++) {
+      arrayQuery[i] = {
+        name: "roger ke-"[i],
+      };
+    }
+  } else {
+    arrayQuery = [
+      {
+        status: undefined,
+        message: "Syntax Error",
+      },
+    ];
+  }
+  return [true, arrayQuery, ""];
+}
+
+const result1 = executeQuery("SELECT * FROM users");
+const result2 = executeQuery("INVALID QUERY");
+
+if (result1[0]) {
+  console.log("Success! Found", result1[1]?.length, "records");
+}
+// Output: Success! Found 5 records
+
+if (!result2[0]) {
+  console.log("Error:", result2[2]);
+}
+// Output: Error: Syntax error
+
+// soal 28
+type Printable = {
+  print: () => string;
+};
+
+type Saveable = {
+  save: () => boolean;
+};
+
+type Deletable = {
+  delete: () => void;
+};
+
+type Document2 = Printable & Saveable & Deletable;
+
+function manageDocument(data: Document2) {}
+
+const doc: Document2 = {
+  print: () => "Document printed",
+  save: () => true,
+  delete: () => console.log("Document deleted"),
+};
+
+console.log(doc.print()); // Output: Document printed
+console.log(doc.save()); // Output: true
+doc.delete(); // Output: Document deleted
