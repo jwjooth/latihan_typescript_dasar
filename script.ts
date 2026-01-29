@@ -679,3 +679,126 @@ const doc: Document2 = {
 console.log(doc.print()); // Output: Document printed
 console.log(doc.save()); // Output: true
 doc.delete(); // Output: Document deleted
+
+// soal 29
+interface Company {
+  name: string;
+  departments?: {
+    name: string;
+    employees?: {
+      name: string;
+      email?: string;
+    }[];
+  }[];
+}
+
+function getEmployeeEmail(company: Company, name: string) {}
+
+const company: Company = {
+  name: "Tech Corp",
+  departments: [
+    {
+      name: "Engineering",
+      employees: [
+        { name: "Alice", email: "alice@example.com" },
+        { name: "Bob" },
+      ],
+    },
+  ],
+};
+
+console.log(getEmployeeEmail(company, "Alice")); // Output: alice@example.com
+console.log(getEmployeeEmail(company, "Bob")); // Output: No email provided
+console.log(getEmployeeEmail(company, "Unknown")); // Output: Employee not found
+
+// soal 30
+enum TaskPriority {
+  "Low",
+  "Medium",
+  "High",
+  "Critical",
+}
+
+enum TaskStatus {
+  "Todo",
+  "InProgress",
+  "Done",
+  "Cancelled",
+}
+
+interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  priority: TaskPriority;
+  status: TaskStatus;
+  dueDate?: string;
+  assignee?: string;
+}
+
+type TaskFilter = {
+  priority?: TaskPriority;
+  status?: TaskStatus;
+  assignee?: string;
+};
+
+function getTasks(): Task[] {
+  return [];
+}
+
+function getTasks(filter: TaskFilter): Task[] {
+  return [{}];
+}
+
+function getTasks(id: number): Task | undefined {
+  return undefined;
+}
+
+function getTasks(value: unknown): unknown {
+  return undefined;
+}
+
+function updateTaskStatus(value: Task, status: TaskStatus): Task {}
+
+function getTaskByPriority(task: Task[], prio: TaskPriority): Task {}
+
+const tasks: Task[] = [
+  {
+    id: 1,
+    title: "Fix bug",
+    priority: TaskPriority.High,
+    status: TaskStatus.InProgress,
+    assignee: "Alice",
+  },
+  {
+    id: 2,
+    title: "Write docs",
+    priority: TaskPriority.Medium,
+    status: TaskStatus.Todo,
+    assignee: "Bob",
+  },
+  {
+    id: 3,
+    title: "Review PR",
+    priority: TaskPriority.Critical,
+    status: TaskStatus.Todo,
+    assignee: "Alice",
+  },
+  {
+    id: 4,
+    title: "Deploy app",
+    priority: TaskPriority.High,
+    status: TaskStatus.Done,
+    assignee: "Carol",
+  },
+];
+
+console.log(getTasks().length); // Output: 4
+console.log(getTasks({ priority: TaskPriority.High }).length); // Output: 2
+console.log(getTasks(1)?.title); // Output: Fix bug
+
+const updated = updateTaskStatus(tasks[0], TaskStatus.Done);
+console.log(updated.status); // Output: Done
+
+const critical = getTasksByPriority(tasks, TaskPriority.Critical);
+console.log(critical[0].title); // Output: Review PR
